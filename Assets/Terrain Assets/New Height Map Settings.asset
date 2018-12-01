@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb49c415c73a941729b11c3076268f15, type: 3}
+  m_Name: New Height Map Settings
+  m_EditorClassIdentifier: 
+  autoUpdate: 1
+  noiseSettings:
+    normalizeMode: 1
+    scale: 50
+    octaves: 6
+    persistance: 0.498
+    lacunarity: 2
+    seed: 0
+    offset: {x: 0, y: 0}
+  useFalloff: 0
+  heightMultiplier: 50
+  heightCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.002994012
+      value: -0.063222855
+      inSlope: 0.5114178
+      outSlope: 0.5114178
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.24113402
+      value: 0.5066003
+      inSlope: -0.26721713
+      outSlope: -0.26721713
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.56354296
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.798579
+      value: 0.5529556
+      inSlope: 0.32413742
+      outSlope: 0.32413742
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1.1384108
+      value: 1.2149422
+      inSlope: 1.4434949
+      outSlope: 1.4434949
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.43030804
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1.3688872
+      value: 1.9329253
+      inSlope: 2.9573286
+      outSlope: 2.9573286
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.2508243
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
