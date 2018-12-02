@@ -3,17 +3,14 @@
 public static class HeightMapGenerator {
 
     public static HeightMap GenerateHeightMap(int width, int height, HeightMapSettings settings, Vector2 sampleCentre) {
-        var values = Noise.GenerateNoiseMap (width, height, settings.noiseSettings, sampleCentre);
+        var values = Noise.GenerateNoiseMap (width, height, settings.noiseSettings, sampleCentre, settings.heightMultiplier);
 
-        var heightCurveThreadsafe = new AnimationCurve (settings.heightCurve.keys);
 
         var minValue = float.MaxValue;
         var maxValue = float.MinValue;
 
         for (var i = 0; i < width; i++) {
             for (var j = 0; j < height; j++) {
-                values [i, j] *= heightCurveThreadsafe.Evaluate (values [i, j]) * settings.heightMultiplier;
-
                 if (values [i, j] > maxValue) {
                     maxValue = values [i, j];
                 }
@@ -25,9 +22,6 @@ public static class HeightMapGenerator {
 
         return new HeightMap (values, minValue, maxValue);
     }
-
-
-   
 }
 
 public struct HeightMap {
@@ -55,7 +49,7 @@ public struct HeightMap {
         var bottomEdge = new float[values.GetLength(0)];
         for (var i = 0; i < bottomEdge.Length; i++)
         {
-            bottomEdge[i] = values[i, values.GetLength(1) - 1];
+            bottomEdge[i] = values[values.GetLength(1) -1, 1];
         }
 
         return bottomEdge;
@@ -66,7 +60,7 @@ public struct HeightMap {
         var leftEdge = new float[values.GetLength(1)];
         for (var i = 0; i < leftEdge.Length; i++)
         {
-            leftEdge[i] = values[0, i];
+            leftEdge[i] = values[i, 0];
         }
 
         return leftEdge;
@@ -77,7 +71,7 @@ public struct HeightMap {
         var rightEdge = new float[values.GetLength(1)];
         for (var i = 0; i < rightEdge.Length; i++)
         {
-            rightEdge[i] = values[values.GetLength(1) - 1, i];
+            rightEdge[i] = values[i, values.GetLength(0) -1];
         }
 
         return rightEdge;
@@ -88,7 +82,7 @@ public struct HeightMap {
         var topEdge = new float[values.GetLength(0)];
         for(var i = 0; i < topEdge.Length; i++)
         {
-            topEdge[i] = values[i, 0];
+            topEdge[i] = values[0, i];
         }
 
         return topEdge;

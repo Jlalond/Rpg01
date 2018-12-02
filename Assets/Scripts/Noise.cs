@@ -8,7 +8,7 @@ public static class Noise {
 
     public enum NormalizeMode {Local, Global};
 
-    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, NoiseSettings settings, Vector2 sampleCentre) {
+    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, NoiseSettings settings, Vector2 sampleCentre, float multiplier) {
         var noiseMap = new float[mapWidth,mapHeight];
 
         var prng = new System.Random (settings.Seed);
@@ -67,7 +67,22 @@ public static class Noise {
             }
         }
 
+        noiseMap = ScaleNoiseByMultiplierBeforeNormalizing(noiseMap, multiplier);
+
         return NormalizeHeightmap(noiseMap, sampleCentre);
+    }
+
+    private static float[,] ScaleNoiseByMultiplierBeforeNormalizing(float[,] values, float multiplier)
+    {
+        for (int x = 0; x < values.GetLength(0); x++)
+        {
+            for (int y = 0; y < values.GetLength(1); y++)
+            {
+                values[x, y] *= multiplier;
+            }
+        }
+
+        return values;
     }
 
     private static float[,] NormalizeHeightmap(float[,] heightMaps, Vector2 coords)
@@ -91,12 +106,12 @@ public static class Noise {
                 if (heightAtCoords > sum)
                 {
                     var diff = heightAtCoords - sum;
-                    heightMaps[x, y] = heightAtCoords - (diff / 2);
+                    heightMaps[x, y] = heightAtCoords - (diff / 1.2f);
                 }
                 else
                 {
                     var diff = sum - heightAtCoords;
-                    heightMaps[x, y] = heightAtCoords + (diff / 2);
+                    heightMaps[x, y] = heightAtCoords + (diff / 1.2f);
                 }
             }
         }
@@ -104,7 +119,7 @@ public static class Noise {
         return NormalizeHeightsToNeighboringMeshes(heightMaps, coords);
     }
 
-    private static float[,] NormalizeHeightsToNeighboringMeshes(float[,] heightMap, Vector2 Coord)
+    public static float[,] NormalizeHeightsToNeighboringMeshes(float[,] heightMap, Vector2 Coord)
     {
         var nearbyChunks = TerrainRepository.GetChunksWithinDistance(Coord);
         heightMap = heightMap.NormalizeLeftSide(GetHeightMapOrEmptyMap(nearbyChunks.Left).RightEdge);

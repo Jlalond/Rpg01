@@ -16,10 +16,21 @@ namespace Extensions
             Debug.Log("Current heightmap TopLeft: " + heightMap[0,0]);
             for (int i = 0; i < leftSide.Length; i++)
             {
-                heightMap[0, i] = leftSide[i];
+                heightMap[i, 0] = leftSide[i];
             }
 
             return heightMap;
+        }
+
+        public static float[] GetLeft(this float[,] heightMap, float[] leftSide)
+        {
+            var left = new float[heightMap.GetLength(1)];
+            for (int i = 0; i < heightMap.GetLength(1); i++)
+            {
+                left[i] = heightMap[i, 0];
+            }
+
+            return left;
         }
 
         public static float[,] NormalizeRightSide(this float[,] heightMap, float[] rightSide)
@@ -30,7 +41,7 @@ namespace Extensions
             }
             for (int i = 0; i < rightSide.Length; i++)
             {
-                heightMap[heightMap.GetLength(0) -1, i] = rightSide[i];
+                heightMap[i, heightMap.GetLength(0) - 1] = rightSide[i];
             }
 
             return heightMap;
@@ -44,7 +55,7 @@ namespace Extensions
             }
             for (int i = 0; i < topSide.Length; i++)
             {
-                heightMap[i, 0] = topSide[i];
+                heightMap[0, i] = topSide[i];
             }
 
             return heightMap;
@@ -58,7 +69,7 @@ namespace Extensions
             }
             for (var i = 0; i < bottomSide.Length; i++)
             {
-                heightMap[i, 0] = bottomSide[i];
+                heightMap[heightMap.GetLength(1) - 1, 0] = bottomSide[i];
             }
 
             return heightMap;
