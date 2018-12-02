@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Assets.Scripts.Biomes
+namespace Biomes
 {
     public class BiomeList
     {

@@ -2,19 +2,19 @@
 using System.Linq;
 using UnityEngine;
 
-namespace Assets.Scripts.Biomes
+namespace Biomes
 {
     public static class BiomeGenerator
     {
         public static Biome GenerateRelativeBiome(TerrainChunk origin)
         {
-            var nearbyChunks = TerrainRepository.GetChunksWithinDistance(origin.coord);
+            var nearbyChunks = TerrainRepository.GetChunksWithinDistance(origin.Coord).Flatten().ToList();
             if(!nearbyChunks.Any())
             {
                 return new Biome();
             }
 
-            var biomes = nearbyChunks.Select(c => c.biome);
+            var biomes = nearbyChunks.Select(c => c.Biome);
             var biomeDictionary = new Dictionary<Biome, int>();
             foreach(var biome in biomes)
             {
