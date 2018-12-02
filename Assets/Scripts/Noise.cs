@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using System.Threading;
+using Extensions;
+using UnityEngine;
 using UnityEngine.Serialization;
 
 public static class Noise {
@@ -64,10 +67,10 @@ public static class Noise {
             }
         }
 
-        return NormalizeHeightmap(noiseMap);
+        return NormalizeHeightmap(noiseMap, sampleCentre);
     }
 
-    private static float[,] NormalizeHeightmap(float[,] heightMaps)
+    private static float[,] NormalizeHeightmap(float[,] heightMaps, Vector2 coords)
     {
         var sum = 0f;
         for (var x = 0; x < heightMaps.GetLength(0); x++)
@@ -98,7 +101,24 @@ public static class Noise {
             }
         }
 
-        return heightMaps;
+        return NormalizeHeightsToNeighboringMeshes(heightMaps, coords);
+    }
+
+    private static float[,] NormalizeHeightsToNeighboringMeshes(float[,] heightMap, Vector2 Coord)
+    {
+        var nearbyChunks = TerrainRepository.GetChunksWithinDistance(Coord);
+        heightMap = heightMap.NormalizeLeftSide(GetHeightMapOrEmptyMap(nearbyChunks.Left).RightEdge);
+        heightMap = heightMap.NormalizeRightSide(GetHeightMapOrEmptyMap(nearbyChunks.Right).LeftEdge);
+        heightMap = heightMap.NormalizeBottomSide(GetHeightMapOrEmptyMap(nearbyChunks.Below).TopEdge);
+        heightMap = heightMap.NormalizeTopSide(GetHeightMapOrEmptyMap(nearbyChunks.Above).BottomEdge);
+        return heightMap;
+    }
+
+    private static HeightMap GetHeightMapOrEmptyMap(TerrainChunk chunk)
+    {
+        var isnull = chunk == null;
+        Debug.Log("Chunk is null: " + isnull);
+        return chunk != null ? chunk.HeightMap : new HeightMap(new float[0, 0], 0.0f, 0.0f);
     }
 
 }

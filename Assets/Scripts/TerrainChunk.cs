@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Biomes;
-using Data;
 using Extensions;
 using UnityEditor.VersionControl;
 using UnityEngine;
@@ -24,11 +23,11 @@ public class TerrainChunk {
     readonly MeshFilter _meshFilter;
     readonly MeshCollider _meshCollider;
 
-    readonly LodInfo[] _detailLevels;
+    readonly LODInfo[] _detailLevels;
     readonly LODMesh[] _lodMeshes;
     readonly int _colliderLodIndex;
 
-    HeightMap _heightMap;
+    public HeightMap HeightMap;
     bool _heightMapReceived;
     int _previousLodIndex = -1;
     bool _hasSetCollider;
@@ -40,7 +39,7 @@ public class TerrainChunk {
     readonly MeshSettings _meshSettings;
     readonly Transform _viewer;
 
-    public TerrainChunk(Vector2 coord, HeightMapSettings heightMapSettings, MeshSettings meshSettings, LodInfo[] detailLevels, int colliderLodIndex, Transform parent, Transform viewer, Material material) {
+    public TerrainChunk(Vector2 coord, HeightMapSettings heightMapSettings, MeshSettings meshSettings, LODInfo[] detailLevels, int colliderLodIndex, Transform parent, Transform viewer, Material material) {
         this.Coord = coord;
         this._detailLevels = detailLevels;
         this._colliderLodIndex = colliderLodIndex;
@@ -49,9 +48,9 @@ public class TerrainChunk {
         this._viewer = viewer;
         this.Biome = BiomeGenerator.GenerateRelativeBiome(this);
 
-        _sampleCentre = coord * meshSettings.MeshWorldSize / meshSettings.MeshScale;
-        var position = coord * meshSettings.MeshWorldSize ;
-        _bounds = new Bounds(position,Vector2.one * meshSettings.MeshWorldSize );
+        _sampleCentre = coord * meshSettings.meshWorldSize / meshSettings.meshScale;
+        var position = coord * meshSettings.meshWorldSize;
+        _bounds = new Bounds(position,Vector2.one * meshSettings.meshWorldSize );
 
 
         _meshObject = new GameObject("Terrain Chunk");
@@ -66,58 +65,25 @@ public class TerrainChunk {
 
         _lodMeshes = new LODMesh[detailLevels.Length];
         for (var i = 0; i < detailLevels.Length; i++) {
-            _lodMeshes[i] = new LODMesh(detailLevels[i].Lod);
+            _lodMeshes[i] = new LODMesh(detailLevels[i].lod);
             _lodMeshes[i].updateCallback += UpdateTerrainChunk;
             if (i == colliderLodIndex) {
                 _lodMeshes[i].updateCallback += UpdateCollisionMesh;
             }
         }
 
-        _maxViewDst = detailLevels [detailLevels.Length - 1].VisibleDstThreshold;
+        _maxViewDst = detailLevels [detailLevels.Length - 1].visibleDstThreshold;
 
-    }
-
-    private void WaitAndCallBackLater(HeightMap heightMap, ActionProcessor actionProcessor)
-    {
-        Thread.Sleep(5000);
-        actionProcessor.AddFuncToQueue(() => OnHeightMapReceived(heightMap)); 
-    }
-
-    private HeightMap NormalizeHeightsToNeighboringMeshes(HeightMap heightMap)
-    {
-        var values = heightMap.Values;
-
-        var nearbyChunks = TerrainRepository.GetChunksWithinDistance(Coord);
-        if (nearbyChunks.Flatten().Where(c => c != null).Any(p => p._heightMapReceived == false))
-        {
-            var thread = new Thread(() => WaitAndCallBackLater(heightMap, GameObject.FindObjectOfType<ActionProcessor>()));
-            thread.Start();
-            return heightMap;
-        }
-        values = values.NormalizeLeftSide(GetHeightMapOrEmptyMap(nearbyChunks.Left).RightEdge);
-        values = values.NormalizeRightSide(GetHeightMapOrEmptyMap(nearbyChunks.Right).LeftEdge);
-        values = values.NormalizeBottomSide(GetHeightMapOrEmptyMap(nearbyChunks.Below).TopEdge);
-        values = values.NormalizeTopSide(GetHeightMapOrEmptyMap(nearbyChunks.Above).BottomEdge);
-        return new HeightMap(values, heightMap.MinValue, heightMap.MaxValue);
-    }
-
-    private static HeightMap GetHeightMapOrEmptyMap(TerrainChunk chunk)
-    {
-        var isnull = chunk == null;
-        Debug.Log("Chunk is null: " + isnull);
-        return chunk != null ? chunk._heightMap : new HeightMap(new float[0,0], 0.0f, 0.0f);
     }
 
     public void Load() {
-        ThreadedDataRequester.RequestData(() => HeightMapGenerator.GenerateHeightMap (_meshSettings.NumVertsPerLine, _meshSettings.NumVertsPerLine, _heightMapSettings, _sampleCentre), OnHeightMapReceived);
+        OnHeightMapReceived(HeightMapGenerator.GenerateHeightMap (_meshSettings.numVertsPerLine, _meshSettings.numVertsPerLine, _heightMapSettings, _sampleCentre));
     }
 
 
-    private void OnHeightMapReceived(object heightMapObject) {
-        var heightMap = NormalizeHeightsToNeighboringMeshes((HeightMap)heightMapObject);
-        _heightMap = heightMap;
+    private void OnHeightMapReceived(HeightMap heightMapObject) {
+        HeightMap = heightMapObject;
         _heightMapReceived = true;
-
         UpdateTerrainChunk ();
     }
 
@@ -139,7 +105,7 @@ public class TerrainChunk {
                 var lodIndex = 0;
 
                 for (var i = 0; i < _detailLevels.Length - 1; i++) {
-                    if (viewerDstFromNearestEdge > _detailLevels [i].VisibleDstThreshold) {
+                    if (viewerDstFromNearestEdge > _detailLevels [i].visibleDstThreshold) {
                         lodIndex = i + 1;
                     } else {
                         break;
@@ -152,7 +118,7 @@ public class TerrainChunk {
                         _previousLodIndex = lodIndex;
                         _meshFilter.mesh = lodMesh.mesh;
                     } else if (!lodMesh.hasRequestedMesh) {
-                        lodMesh.RequestMesh (_heightMap, _meshSettings);
+                        lodMesh.RequestMesh (HeightMap, _meshSettings);
                     }
                 }
 
@@ -173,9 +139,9 @@ public class TerrainChunk {
         if (!_hasSetCollider) {
             var sqrDstFromViewerToEdge = _bounds.SqrDistance (ViewerPosition);
 
-            if (sqrDstFromViewerToEdge < _detailLevels [_colliderLodIndex].SqrVisibleDstThreshold) {
+            if (sqrDstFromViewerToEdge < _detailLevels [_colliderLodIndex].sqrVisibleDstThreshold) {
                 if (!_lodMeshes [_colliderLodIndex].hasRequestedMesh) {
-                    _lodMeshes [_colliderLodIndex].RequestMesh (_heightMap, _meshSettings);
+                    _lodMeshes [_colliderLodIndex].RequestMesh (HeightMap, _meshSettings);
                 }
             }
 

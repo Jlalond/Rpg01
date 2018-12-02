@@ -1,6 +1,4 @@
-﻿using Data;
-
-namespace Biomes
+﻿namespace Biomes
 {
     public class Biome
     {

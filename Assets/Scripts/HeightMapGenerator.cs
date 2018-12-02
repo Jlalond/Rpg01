@@ -1,19 +1,18 @@
-﻿using Data;
-using UnityEngine;
+﻿using UnityEngine;
 
 public static class HeightMapGenerator {
 
     public static HeightMap GenerateHeightMap(int width, int height, HeightMapSettings settings, Vector2 sampleCentre) {
-        var values = Noise.GenerateNoiseMap (width, height, settings.NoiseSettings, sampleCentre);
+        var values = Noise.GenerateNoiseMap (width, height, settings.noiseSettings, sampleCentre);
 
-        var heightCurveThreadsafe = new AnimationCurve (settings.HeightCurve.keys);
+        var heightCurveThreadsafe = new AnimationCurve (settings.heightCurve.keys);
 
         var minValue = float.MaxValue;
         var maxValue = float.MinValue;
 
         for (var i = 0; i < width; i++) {
             for (var j = 0; j < height; j++) {
-                values [i, j] *= heightCurveThreadsafe.Evaluate (values [i, j]) * settings.HeightMultiplier;
+                values [i, j] *= heightCurveThreadsafe.Evaluate (values [i, j]) * settings.heightMultiplier;
 
                 if (values [i, j] > maxValue) {
                     maxValue = values [i, j];

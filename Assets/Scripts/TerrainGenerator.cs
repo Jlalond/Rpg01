@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Assets.Scripts;
 
 public class TerrainGenerator : MonoBehaviour {
 
@@ -57,7 +56,7 @@ public class TerrainGenerator : MonoBehaviour {
 	void UpdateVisibleChunks() {
 		HashSet<Vector2> alreadyUpdatedChunkCoords = new HashSet<Vector2> ();
 		for (int i = visibleTerrainChunks.Count-1; i >= 0; i--) {
-			alreadyUpdatedChunkCoords.Add (visibleTerrainChunks [i].coord);
+			alreadyUpdatedChunkCoords.Add (visibleTerrainChunks [i].Coord);
 			visibleTerrainChunks [i].UpdateTerrainChunk ();
 		}
 			
@@ -68,12 +67,12 @@ public class TerrainGenerator : MonoBehaviour {
 			for (int xOffset = -chunksVisibleInViewDst; xOffset <= chunksVisibleInViewDst; xOffset++) {
 				Vector2 viewedChunkCoord = new Vector2 (currentChunkCoordX + xOffset, currentChunkCoordY + yOffset);
 				if (!alreadyUpdatedChunkCoords.Contains (viewedChunkCoord)) {
-					if (TerrainRepository.terrainChunkDictionary.ContainsKey (viewedChunkCoord)) {
-                        TerrainRepository.terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk ();
+					if (TerrainRepository.TerrainChunkDictionary.ContainsKey (viewedChunkCoord)) {
+                        TerrainRepository.TerrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk ();
 					} else {
 						TerrainChunk newChunk = new TerrainChunk (viewedChunkCoord,heightMapSettings,meshSettings, detailLevels, colliderLODIndex, transform, viewer, mapMaterial);
-                        TerrainRepository.terrainChunkDictionary.Add (viewedChunkCoord, newChunk);
-						newChunk.onVisibilityChanged += OnTerrainChunkVisibilityChanged;
+                        TerrainRepository.TerrainChunkDictionary.Add (viewedChunkCoord, newChunk);
+						newChunk.OnVisibilityChanged += OnTerrainChunkVisibilityChanged;
 						newChunk.Load ();
 					}
 				}
