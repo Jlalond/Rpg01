@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 [CreateAssetMenu()]
 public class MeshSettings : UpdatableData {
@@ -21,14 +20,13 @@ public class MeshSettings : UpdatableData {
 	// num verts per line of mesh rendered at LOD = 0. Includes the 2 extra verts that are excluded from final mesh, but used for calculating normals
 	public int numVertsPerLine {
 		get {
-			return supportedChunkSizes [(useFlatShading) ? flatshadedChunkSizeIndex : chunkSizeIndex] + 5;
+			return 72;
 		}
 	}
 
-	public float meshWorldSize {
-		get {
-			return (numVertsPerLine - 3) * meshScale;
-		}
+	public float meshWorldSize
+	{
+	    get { return 72 * 10; }
 	}
 
 

@@ -31,13 +31,13 @@ public class MapPreview : MonoBehaviour {
 		textureData.UpdateMeshHeights (terrainMaterial, heightMapSettings.minHeight, heightMapSettings.maxHeight);
 		HeightMap heightMap = HeightMapGenerator.GenerateHeightMap (meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, Vector2.zero);
 
-		if (drawMode == DrawMode.NoiseMap) {
-			DrawTexture (TextureGenerator.TextureFromHeightMap (heightMap));
-		} else if (drawMode == DrawMode.Mesh) {
-			DrawMesh (MeshGenerator.GenerateTerrainMesh (heightMap.Values,meshSettings, editorPreviewLOD));
-		} else if (drawMode == DrawMode.FalloffMap) {
-			DrawTexture(TextureGenerator.TextureFromHeightMap(new HeightMap(FalloffGenerator.GenerateFalloffMap(meshSettings.numVertsPerLine),0,1)));
-		}
+		//if (drawMode == DrawMode.NoiseMap) {
+		//	DrawTexture (TextureGenerator.TextureFromHeightMap (heightMap));
+		//} else if (drawMode == DrawMode.Mesh) {
+		//	DrawMesh (MeshGenerator.GenerateTerrainMesh (heightMap.Values,meshSettings, editorPreviewLOD));
+		//} else if (drawMode == DrawMode.FalloffMap) {
+		//	DrawTexture(TextureGenerator.TextureFromHeightMap(new HeightMap(FalloffGenerator.GenerateFalloffMap(meshSettings.numVertsPerLine),0,1)));
+		//}
 	}
 
 
@@ -52,12 +52,12 @@ public class MapPreview : MonoBehaviour {
 		meshFilter.gameObject.SetActive (false);
 	}
 
-	public void DrawMesh(MeshData meshData) {
-		meshFilter.sharedMesh = meshData.CreateMesh ();
+	//public void DrawMesh() {
+	//	meshFilter.sharedMesh = meshData.CreateMesh ();
 
-		textureRender.gameObject.SetActive (false);
-		meshFilter.gameObject.SetActive (true);
-	}
+	//	textureRender.gameObject.SetActive (false);
+	//	meshFilter.gameObject.SetActive (true);
+	//}
 
 
 

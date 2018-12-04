@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using Extensions;
 using UnityEngine;
@@ -67,9 +68,11 @@ public static class Noise {
             }
         }
 
-        noiseMap = ScaleNoiseByMultiplierBeforeNormalizing(noiseMap, multiplier);
 
-        return NormalizeHeightmap(noiseMap, sampleCentre);
+        noiseMap = ScaleNoiseByMultiplierBeforeNormalizing(noiseMap, multiplier);
+        noiseMap = NormalizeHeightsToNeighboringMeshes(noiseMap, sampleCentre);
+
+        return NormalizeHeightsToNeighboringMeshes(NormalizeHeightmap(noiseMap), sampleCentre);
     }
 
     private static float[,] ScaleNoiseByMultiplierBeforeNormalizing(float[,] values, float multiplier)
@@ -85,7 +88,7 @@ public static class Noise {
         return values;
     }
 
-    private static float[,] NormalizeHeightmap(float[,] heightMaps, Vector2 coords)
+    private static float[,] NormalizeHeightmap(float[,] heightMaps)
     {
         var sum = 0f;
         for (var x = 0; x < heightMaps.GetLength(0); x++)
@@ -116,12 +119,12 @@ public static class Noise {
             }
         }
 
-        return NormalizeHeightsToNeighboringMeshes(heightMaps, coords);
+        return heightMaps;
     }
 
-    public static float[,] NormalizeHeightsToNeighboringMeshes(float[,] heightMap, Vector2 Coord)
+    private static float[,] NormalizeHeightsToNeighboringMeshes(float[,] heightMap, Vector2 coord)
     {
-        var nearbyChunks = TerrainRepository.GetChunksWithinDistance(Coord);
+        var nearbyChunks = TerrainRepository.GetChunksWithinDistance(coord);
         heightMap = heightMap.NormalizeLeftSide(GetHeightMapOrEmptyMap(nearbyChunks.Left).RightEdge);
         heightMap = heightMap.NormalizeRightSide(GetHeightMapOrEmptyMap(nearbyChunks.Right).LeftEdge);
         heightMap = heightMap.NormalizeBottomSide(GetHeightMapOrEmptyMap(nearbyChunks.Below).TopEdge);
@@ -129,10 +132,21 @@ public static class Noise {
         return heightMap;
     }
 
+    private static void AssertEqual(float[] a, float[] b)
+    {
+        for (int i = 0; i < a.Length; i++)
+        {
+            if (Math.Abs(a[i] - b[i]) > 0.01f)
+            {
+                Debug.LogError("Noise maps are not normalizing");
+            }
+        }
+    }
+
     private static HeightMap GetHeightMapOrEmptyMap(TerrainChunk chunk)
     {
         var isnull = chunk == null;
-        Debug.Log("Chunk is null: " + isnull);
+        //Debug.Log("Chunk is null: " + isnull);
         return chunk != null ? chunk.HeightMap : new HeightMap(new float[0, 0], 0.0f, 0.0f);
     }
 

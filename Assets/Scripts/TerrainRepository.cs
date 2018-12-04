@@ -1,9 +1,19 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class TerrainRepository
 {
     public static Dictionary<Vector2, TerrainChunk> TerrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();
+    private static float _meshSize = -1;
+
+    public static void SetMeshSize(float num)
+    {
+        if (_meshSize == -1)
+        {
+            _meshSize = num;
+        }
+    }
 
     public static void AddChunk(TerrainChunk terrainChunk)
     {
@@ -13,28 +23,30 @@ public static class TerrainRepository
 
     public static NeighboringChunks GetChunksWithinDistance(Vector2 origin)
     {
+        var normalizedX = Mathf.RoundToInt(origin.x / _meshSize);
+        var normalizedY = Mathf.RoundToInt(origin.y / _meshSize);
         var nearbyChunks = new TerrainChunk[4];
         TerrainChunk left;
-        if (TerrainChunkDictionary.TryGetValue(new Vector2(origin.x + 1, origin.y), out left))
+        if (TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX + 1, normalizedY), out left))
         {
             Debug.Log("Found left");
             nearbyChunks[0] = left;
         }
 
         TerrainChunk right;
-        if(TerrainChunkDictionary.TryGetValue(new Vector2(origin.x - 1, origin.y), out right))
+        if(TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX - 1, normalizedY), out right))
         {
             nearbyChunks[1] = right;
         }
 
         TerrainChunk above;
-        if(TerrainChunkDictionary.TryGetValue(new Vector2(origin.x, origin.y + 1), out above))
+        if(TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX, normalizedY + 1), out above))
         {
             nearbyChunks[2] = above;
         }
 
         TerrainChunk below;
-        if (TerrainChunkDictionary.TryGetValue(new Vector2(origin.x, origin.y - 1), out below))
+        if (TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX, normalizedY - 1), out below))
         {
             nearbyChunks[3] = below;
         }

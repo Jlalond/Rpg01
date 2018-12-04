@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Extensions;
+using UnityEngine;
 
 public static class HeightMapGenerator {
 
@@ -38,53 +39,9 @@ public struct HeightMap {
         Values = values;
         MinValue = minValue;
         MaxValue = maxValue;
-        TopEdge = GetTopEdge(values);
-        BottomEdge = GetBottomEdge(values);
-        LeftEdge = GetLeftEdge(values);
-        RightEdge = GetRightEdge(values);
-    }
-
-    private static float[] GetBottomEdge(float[,] values)
-    {
-        var bottomEdge = new float[values.GetLength(0)];
-        for (var i = 0; i < bottomEdge.Length; i++)
-        {
-            bottomEdge[i] = values[values.GetLength(1) -1, 1];
-        }
-
-        return bottomEdge;
-    }
-
-    private static float[] GetLeftEdge(float[,] values)
-    {
-        var leftEdge = new float[values.GetLength(1)];
-        for (var i = 0; i < leftEdge.Length; i++)
-        {
-            leftEdge[i] = values[i, 0];
-        }
-
-        return leftEdge;
-    }
-
-    private static float[] GetRightEdge(float[,] values)
-    {
-        var rightEdge = new float[values.GetLength(1)];
-        for (var i = 0; i < rightEdge.Length; i++)
-        {
-            rightEdge[i] = values[i, values.GetLength(0) -1];
-        }
-
-        return rightEdge;
-    }
-
-    private static float[] GetTopEdge(float[,] values)
-    {
-        var topEdge = new float[values.GetLength(0)];
-        for(var i = 0; i < topEdge.Length; i++)
-        {
-            topEdge[i] = values[0, i];
-        }
-
-        return topEdge;
+        TopEdge = values.GetTopEdge();
+        BottomEdge = values.GetBottomEdge();
+        LeftEdge = values.GetLeftEdge();
+        RightEdge = values.GetRightEdge();
     }
 }
