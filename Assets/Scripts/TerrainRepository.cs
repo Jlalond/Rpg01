@@ -27,26 +27,26 @@ public static class TerrainRepository
         var normalizedY = Mathf.RoundToInt(origin.y / _meshSize);
         var nearbyChunks = new TerrainChunk[4];
         TerrainChunk left;
-        if (TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX + 1, normalizedY), out left))
+        if (TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX, normalizedY - 1), out left))
         {
             Debug.Log("Found left");
             nearbyChunks[0] = left;
         }
 
         TerrainChunk right;
-        if(TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX - 1, normalizedY), out right))
+        if(TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX, normalizedY + 1), out right))
         {
             nearbyChunks[1] = right;
         }
 
         TerrainChunk above;
-        if(TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX, normalizedY + 1), out above))
+        if(TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX + 1, normalizedY), out above))
         {
             nearbyChunks[2] = above;
         }
 
         TerrainChunk below;
-        if (TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX, normalizedY - 1), out below))
+        if (TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX - 1, normalizedY), out below))
         {
             nearbyChunks[3] = below;
         }

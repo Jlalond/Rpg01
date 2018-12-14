@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class UpdatableData : ScriptableObject {
 
@@ -7,7 +6,7 @@ public class UpdatableData : ScriptableObject {
 	public bool autoUpdate;
 
 	#if UNITY_EDITOR
-
+     
 	protected virtual void OnValidate() {
 		if (autoUpdate) {
 			UnityEditor.EditorApplication.update += NotifyOfUpdatedValues;

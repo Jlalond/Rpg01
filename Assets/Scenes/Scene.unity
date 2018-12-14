@@ -526,16 +526,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3949029a2149e4d748707cec868ce059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textureRender: {fileID: 1711656485}
-  meshFilter: {fileID: 522957209}
-  meshRenderer: {fileID: 522957208}
+  textureRender: {fileID: 0}
+  meshFilter: {fileID: 0}
+  meshRenderer: {fileID: 0}
   drawMode: 0
-  meshSettings: {fileID: 11400000, guid: 46ff57af49f874fe2bd2a350a99d063c, type: 2}
-  heightMapSettings: {fileID: 11400000, guid: 740a13ca91e454c51aeb1f625a396eca, type: 2}
-  textureData: {fileID: 11400000, guid: addd6b0c4581e4f73b0395a4943b9f57, type: 2}
-  terrainMaterial: {fileID: 2100000, guid: b0872f84cf3c7441d893168677410c73, type: 2}
-  editorPreviewLOD: 2
-  autoUpdate: 1
+  meshSettings: {fileID: 0}
+  heightMapSettings: {fileID: 0}
+  textureData: {fileID: 0}
+  terrainMaterial: {fileID: 0}
+  editorPreviewLOD: 0
+  autoUpdate: 0
 --- !u!4 &551791655
 Transform:
   m_ObjectHideFlags: 0
@@ -658,23 +658,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5ed9d55d767f47ef80b94009415a728, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colliderLODIndex: 3
-  detailLevels:
-  - lod: 0
-    visibleDstThreshold: 200
-  - lod: 2
-    visibleDstThreshold: 400
-  - lod: 2
-    visibleDstThreshold: 400
-  - lod: 2
-    visibleDstThreshold: 400
-  - lod: 2
-    visibleDstThreshold: 400
+  colliderLODIndex: 0
   meshSettings: {fileID: 11400000, guid: 46ff57af49f874fe2bd2a350a99d063c, type: 2}
   heightMapSettings: {fileID: 11400000, guid: 740a13ca91e454c51aeb1f625a396eca, type: 2}
   textureSettings: {fileID: 11400000, guid: addd6b0c4581e4f73b0395a4943b9f57, type: 2}
-  viewer: {fileID: 472840204}
-  mapMaterial: {fileID: 2100000, guid: b0872f84cf3c7441d893168677410c73, type: 2}
+  viewer: {fileID: 0}
+  mapMaterial: {fileID: 2100000, guid: 8361772db5b074f13a47ece154898939, type: 2}
 --- !u!114 &1008436977
 MonoBehaviour:
   m_ObjectHideFlags: 0

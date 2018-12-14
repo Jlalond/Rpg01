@@ -1,8 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 
 public class TerrainGenerator : MonoBehaviour {
 
@@ -11,7 +8,7 @@ public class TerrainGenerator : MonoBehaviour {
 
 
 	public int colliderLODIndex;
-	public LODInfo[] detailLevels;
+	//public LODInfo[] detailLevels;
 
 	public MeshSettings meshSettings;
 	public HeightMapSettings heightMapSettings;
@@ -33,10 +30,10 @@ public class TerrainGenerator : MonoBehaviour {
 		textureSettings.ApplyToMaterial (mapMaterial);
 		textureSettings.UpdateMeshHeights (mapMaterial, heightMapSettings.minHeight, heightMapSettings.maxHeight);
 
-		float maxViewDst = detailLevels [detailLevels.Length - 1].visibleDstThreshold;
+		//float maxViewDst = detailLevels [detailLevels.Length - 1].visibleDstThreshold;
 		meshWorldSize = meshSettings.meshWorldSize;
         TerrainRepository.SetMeshSize(meshWorldSize);
-		chunksVisibleInViewDst = Mathf.RoundToInt(maxViewDst / meshWorldSize);
+		chunksVisibleInViewDst = Mathf.RoundToInt(300f / meshWorldSize);
         CreateOrigin();
 		UpdateVisibleChunks ();
 	}

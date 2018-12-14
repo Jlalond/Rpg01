@@ -1,5 +1,7 @@
 ﻿using System;
+using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Extensions
 {
@@ -17,34 +19,34 @@ namespace Extensions
                 heightMap[i, 0] = leftSide[i];
             }
 
-            var averageDiff = 0f;
-            var count = 0;
-            for (int x = 0; x < 10; x++)
-            {
-                for (int y = 0; y < heightMap.GetLength(1); y++)
-                {
-                    count++;
-                    averageDiff += leftSide[x] - heightMap[x, y];
-                }
-            }
+            //var averageDiff = 0f;
+            //var count = 0;
+            //for (int x = 0; x < 10; x++)
+            //{
+            //    for (int y = 0; y < heightMap.GetLength(1); y++)
+            //    {
+            //        count++;
+            //        averageDiff += leftSide[x] - heightMap[x, y];
+            //    }
+            //}
 
-            averageDiff = averageDiff / count;
+            //averageDiff = averageDiff / count;
 
-            for (int x = 0; x < heightMap.GetLength(0) / 4; x++)
-            {
-                for (int y = 0; y < heightMap.GetLength(1); y++)
-                {
-                    var value = heightMap[x, y];
-                    if (value > averageDiff)
-                    {
-                        heightMap[x, y] -= averageDiff / 1 + Math.Abs(1 + x); // divided by the offset from the left most edge, 1 being the left most edge 
-                    }
-                    else
-                    {
-                        heightMap[x, y] += averageDiff / 1 + Math.Abs(1 + x);
-                    }
-                }
-            }
+            //for (int x = 0; x < heightMap.GetLength(0) / 4; x++)
+            //{
+            //    for (int y = 0; y < heightMap.GetLength(1); y++)
+            //    {
+            //        var value = heightMap[x, y];
+            //        if (value > averageDiff)
+            //        {
+            //            heightMap[x, y] -= averageDiff / 1 + Math.Abs(1 + x); // divided by the offset from the left most edge, 1 being the left most edge 
+            //        }
+            //        else
+            //        {
+            //            heightMap[x, y] += averageDiff / 1 + Math.Abs(1 + x);
+            //        }
+            //    }
+            //}
 
             return heightMap;
         }
@@ -56,20 +58,28 @@ namespace Extensions
             {
                 return heightMap;
             }
-            for (int i = 0; i < rightSide.Length; i++)
-            {
-                heightMap[i, heightMap.GetLength(0) - 1] = rightSide[i];
-            }
+            var start = heightMap.GetLength(1) / 4;
+            var percentagePerIndex = 1f / start;
+            var iterationAmount = 1f;
 
-            var averageDiff = 0f;
-            var count = 0;
-            for (int x = heightMap.GetLength(0) - heightMap.GetLength(0) / 4; x < rightSide.Length; x++)
+            for (int x = start; x > -1; x--)
             {
                 for (int y = 0; y < heightMap.GetLength(1); y++)
                 {
-                    count++;
-                    averageDiff += rightSide[x] - heightMap[x, y];
+                    var diffFromStart = x - start;
+                    if (diffFromStart == 0)
+                    {
+                        var lerpAmount = Mathf.Lerp(rightSide[y], heightMap[x, y], 1);
+                        heightMap[x, y] = RandomizeLerpAmount(lerpAmount);
+                    }
+                    else
+                    {
+                        var lerpAmount = Mathf.Lerp(rightSide[y], heightMap[x, y], iterationAmount);
+                        heightMap[x, y] = RandomizeLerpAmount(lerpAmount);
+                    }
                 }
+
+                iterationAmount -= percentagePerIndex;
             }
 
             return heightMap;
@@ -81,21 +91,29 @@ namespace Extensions
             {
                 return heightMap;
             }
-            for (int i = 0; i < topSide.Length; i++)
-            {
-                heightMap[0, i] = topSide[i];
-            }
 
-            var averageDiff = 0f;
-            var count = 0;
-            for (int x = 0; x < heightMap.GetLength(1) / 4; x++)
+            var start = heightMap.GetLength(1) / 4;
+            var percentagePerIndex = 1f / start;
+            var iterationAmount = 1f;
+
+            for (int x = start; x > -1; x--)
             {
-                for (int y = 0; y < heightMap.GetLength(0); y++)
+                for (int y = 0; y < heightMap.GetLength(1); y++)
                 {
-                    var lerpAmount = Mathf.Lerp(topSide[y], heightMap[x,y], (float)1 / (x + 1));
-                    heightMap[x, y] = lerpAmount;
-                    averageDiff += topSide[x] - heightMap[x, y];
+                    var diffFromStart = x - start;
+                    if (diffFromStart == 0)
+                    {
+                        var lerpAmount = Mathf.Lerp(topSide[y], heightMap[x,y],  1);
+                        heightMap[x, y] = RandomizeLerpAmount(lerpAmount);
+                    }
+                    else
+                    {
+                        var lerpAmount = Mathf.Lerp(topSide[y], heightMap[x,y], iterationAmount);
+                        heightMap[x, y] = RandomizeLerpAmount(lerpAmount);
+                    }
                 }
+
+                iterationAmount -= percentagePerIndex;
             }
 
             return heightMap;
@@ -108,21 +126,76 @@ namespace Extensions
                 return heightMap;
             }
 
-            for (int x = heightMap.GetLength(1) - heightMap.GetLength(1) / 4; x < heightMap.GetLength(0); x++)
+            Debug.Break();
+
+            var distanceFromStartToBottom = Mathf.Abs(heightMap.GetLength(1) - (heightMap.GetLength(1) - heightMap.GetLength(1) / 4));
+            var start = heightMap.GetLength(1) - heightMap.GetLength(1) / 4;
+            var percentagePerIndex = 1f / distanceFromStartToBottom;
+            var iterationAmount = 0f;
+            for (var x = start; x < heightMap.GetLength(0); x++)
             {
                 for (int y = 0; y < heightMap.GetLength(1); y++)
                 {
-                    var lerpAmount = Mathf.Lerp(bottomSide[y], heightMap[x,y], (float)x / heightMap.GetLength(1));
-                    heightMap[x, y] = lerpAmount;
+                    var diffFromStart = x - start;
+                    if (diffFromStart == 0)
+                    {
+                        var lerpAmount = Mathf.Lerp(heightMap[start, y], bottomSide[y], 0);
+                        heightMap[x, y] = RandomizeLerpAmount(lerpAmount);
+                    }
+                    else
+                    {
+                        var lerpAmount = Mathf.Lerp(heightMap[start, y], bottomSide[y], iterationAmount);
+                        heightMap[x, y] = RandomizeLerpAmount(lerpAmount);
+                    }
                 }
-            }
 
-            for (var i = 0; i < bottomSide.Length; i++)
-            {
-                heightMap[heightMap.GetLength(1) - 1, i] = bottomSide[i];
+                iterationAmount += percentagePerIndex;
             }
 
             return heightMap;
+        }
+
+        public static float[,] BumpifyMatrix(this float[,] heightMap)
+        {
+            for (int x = 0; x < heightMap.GetLength(0); x++)
+            {
+                for (int y = 0; y < heightMap.GetLength(1); y++)
+                {
+                    if (x != 0 && y != 0 && x != heightMap.GetLength(0) - 1 && y != heightMap.GetLength(1) - 1)
+                    {
+                        var percent = Random.Range(1, 2);
+                        var diceRoll = Random.Range(0, 100);
+                        if (diceRoll > 80)
+                        {
+                            var diff = (heightMap[x, y] * (1 + (percent / 100f)));
+                            heightMap[x, y] = diff;
+                        }
+                        else if (diceRoll > 60)
+                        {
+                            var diff = (heightMap[x, y] * (1 - percent / 100f)); ;
+                            heightMap[x, y] = diff;
+                        }
+                    }
+                }
+            }
+
+            return heightMap;
+        }
+
+        private static float RandomizeLerpAmount(float lerpAmount)
+        {
+            var percent = Random.Range(1, 2);
+            var diceRoll = Random.Range(0, 100);
+            if (diceRoll > 80)
+            {
+                return lerpAmount * (1 + (percent / 100f));
+            }
+            else if(diceRoll < 20)
+            {
+                return lerpAmount * (1 - percent / 100f);
+            }
+
+            return lerpAmount;
         }
 
         public static float[] GetBottomEdge(this float[,] values)
