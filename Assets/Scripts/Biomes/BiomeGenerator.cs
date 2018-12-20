@@ -6,9 +6,9 @@ namespace Biomes
 {
     public static class BiomeGenerator
     {
-        public static Biome GenerateRelativeBiome(TerrainChunk origin)
+        public static Biome GenerateRelativeBiome(Vector2 origin)
         {
-            var nearbyChunks = TerrainRepository.GetChunksWithinDistance(origin.Coord).Flatten().ToList();
+            var nearbyChunks = TerrainRepository.GetChunksWithinDistance(origin).Flatten().ToList();
             if(!nearbyChunks.Any())
             {
                 return new Biome();

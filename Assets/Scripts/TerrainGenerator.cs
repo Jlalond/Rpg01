@@ -32,7 +32,6 @@ public class TerrainGenerator : MonoBehaviour {
 
 		//float maxViewDst = detailLevels [detailLevels.Length - 1].visibleDstThreshold;
 		meshWorldSize = meshSettings.meshWorldSize;
-        TerrainRepository.SetMeshSize(meshWorldSize);
 		chunksVisibleInViewDst = Mathf.RoundToInt(300f / meshWorldSize);
         CreateOrigin();
 		UpdateVisibleChunks ();
@@ -45,7 +44,7 @@ public class TerrainGenerator : MonoBehaviour {
             for (int y = 0; y < 5; y++)
             {
                 var newChunk = new TerrainChunk(new Vector2(x, y), heightMapSettings, meshSettings, colliderLODIndex, transform, viewer, mapMaterial);
-                TerrainRepository.TerrainChunkDictionary.Add(new Vector2(x, y), newChunk);
+                TerrainRepository.AddChunk(newChunk);
                 newChunk.OnVisibilityChanged += OnTerrainChunkVisibilityChanged;
                 newChunk.Load();
                 foreach (var terrainChunk in TerrainRepository.TerrainChunkDictionary.Values)

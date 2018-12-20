@@ -1,52 +1,48 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using UnityEngine;
 
 public static class TerrainRepository
 {
     public static Dictionary<Vector2, TerrainChunk> TerrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();
     private static float _meshSize = -1;
-
-    public static void SetMeshSize(float num)
-    {
-        if (_meshSize == -1)
-        {
-            _meshSize = num;
-        }
-    }
+    private static float _meshScale;
+    private static readonly float DistanceBetweenOrigins = 720;
 
     public static void AddChunk(TerrainChunk terrainChunk)
     {
         Debug.Log("Adding Terrain chunk with x: " + terrainChunk.Coord.x + " and y: " + terrainChunk.Coord.y);
-        TerrainChunkDictionary.Add(terrainChunk.Coord, terrainChunk);
+        TerrainChunkDictionary.Add(new Vector2(terrainChunk.Coord.x * DistanceBetweenOrigins, terrainChunk.Coord.y * DistanceBetweenOrigins), terrainChunk);
     }
 
     public static NeighboringChunks GetChunksWithinDistance(Vector2 origin)
     {
-        var normalizedX = Mathf.RoundToInt(origin.x / _meshSize);
-        var normalizedY = Mathf.RoundToInt(origin.y / _meshSize);
+        var normalizedX = origin.x;
+        var normalizedY = origin.y;
         var nearbyChunks = new TerrainChunk[4];
         TerrainChunk left;
-        if (TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX, normalizedY - 1), out left))
+        if (TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX - DistanceBetweenOrigins, normalizedY), out left))
         {
             Debug.Log("Found left");
             nearbyChunks[0] = left;
         }
 
+
         TerrainChunk right;
-        if(TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX, normalizedY + 1), out right))
+        if(TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX + DistanceBetweenOrigins, normalizedY), out right))
         {
             nearbyChunks[1] = right;
         }
 
         TerrainChunk above;
-        if(TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX + 1, normalizedY), out above))
+        if(TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX, normalizedY + DistanceBetweenOrigins), out above))
         {
             nearbyChunks[2] = above;
         }
 
         TerrainChunk below;
-        if (TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX - 1, normalizedY), out below))
+        if (TerrainChunkDictionary.TryGetValue(new Vector2(normalizedX, normalizedY - DistanceBetweenOrigins), out below))
         {
             nearbyChunks[3] = below;
         }

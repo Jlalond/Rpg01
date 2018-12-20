@@ -9,7 +9,7 @@ public class TerrainChunk {
     public Vector2 Coord;
 
     readonly GameObject _meshObject;
-    readonly Vector2 _sampleCentre;
+    readonly Vector2 _unnormalizedCenter;
     Bounds _bounds;
 
     readonly MeshRenderer _meshRenderer;
@@ -36,9 +36,9 @@ public class TerrainChunk {
         this._heightMapSettings = heightMapSettings;
         this._meshSettings = meshSettings;
         this._viewer = viewer;
-        this.Biome = BiomeGenerator.GenerateRelativeBiome(this);
+        this.Biome = BiomeGenerator.GenerateRelativeBiome(_unnormalizedCenter);
 
-        _sampleCentre = coord * meshSettings.meshWorldSize / meshSettings.meshScale;
+        _unnormalizedCenter = coord * meshSettings.meshWorldSize / meshSettings.meshScale;
         var position = coord * meshSettings.meshWorldSize;
         _bounds = new Bounds(position,Vector2.one * meshSettings.meshWorldSize );
 
@@ -61,7 +61,7 @@ public class TerrainChunk {
 
     private void SetNeighboringChunks()
     {
-        var neighbors = TerrainRepository.GetChunksWithinDistance(Coord);
+        var neighbors = TerrainRepository.GetChunksWithinDistance(_unnormalizedCenter);
         if (neighbors.Left != null)
         {
             _terrainChunkGameObject.Left = neighbors.Left._terrainChunkGameObject;
@@ -88,7 +88,7 @@ public class TerrainChunk {
     }
 
     public void Load() {
-        OnHeightMapReceived(HeightMapGenerator.GenerateHeightMap (_meshSettings.numVertsPerLine, _meshSettings.numVertsPerLine, _heightMapSettings, _sampleCentre));
+        OnHeightMapReceived(HeightMapGenerator.GenerateHeightMap (_meshSettings.numVertsPerLine, _meshSettings.numVertsPerLine, _heightMapSettings, _unnormalizedCenter));
     }
 
 
