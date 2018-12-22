@@ -125,10 +125,10 @@ public static class Noise {
     private static float[,] NormalizeHeightsToNeighboringMeshes(float[,] heightMap, Vector2 coord)
     {
         var nearbyChunks = TerrainRepository.GetChunksWithinDistance(coord);
-        heightMap = heightMap.NormalizeLeftSide(GetHeightMapOrEmptyMap(nearbyChunks.Left).RightEdge);
-        heightMap = heightMap.NormalizeRightSide(GetHeightMapOrEmptyMap(nearbyChunks.Right).LeftEdge);
+        //heightMap = heightMap.NormalizeLeftSide(GetHeightMapOrEmptyMap(nearbyChunks.Left).RightEdge);
+        //heightMap = heightMap.NormalizeRightSide(GetHeightMapOrEmptyMap(nearbyChunks.Right).LeftEdge);
         heightMap = heightMap.NormalizeBottomSide(GetHeightMapOrEmptyMap(nearbyChunks.Below).TopEdge);
-        heightMap = heightMap.NormalizeTopSide(GetHeightMapOrEmptyMap(nearbyChunks.Above).BottomEdge);
+        //heightMap = heightMap.NormalizeTopSide(GetHeightMapOrEmptyMap(nearbyChunks.Above).BottomEdge);
         return heightMap;
     }
 

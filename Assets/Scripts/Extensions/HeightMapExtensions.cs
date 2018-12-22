@@ -19,35 +19,6 @@ namespace Extensions
                 heightMap[i, 0] = leftSide[i];
             }
 
-            //var averageDiff = 0f;
-            //var count = 0;
-            //for (int x = 0; x < 10; x++)
-            //{
-            //    for (int y = 0; y < heightMap.GetLength(1); y++)
-            //    {
-            //        count++;
-            //        averageDiff += leftSide[x] - heightMap[x, y];
-            //    }
-            //}
-
-            //averageDiff = averageDiff / count;
-
-            //for (int x = 0; x < heightMap.GetLength(0) / 4; x++)
-            //{
-            //    for (int y = 0; y < heightMap.GetLength(1); y++)
-            //    {
-            //        var value = heightMap[x, y];
-            //        if (value > averageDiff)
-            //        {
-            //            heightMap[x, y] -= averageDiff / 1 + Math.Abs(1 + x); // divided by the offset from the left most edge, 1 being the left most edge 
-            //        }
-            //        else
-            //        {
-            //            heightMap[x, y] += averageDiff / 1 + Math.Abs(1 + x);
-            //        }
-            //    }
-            //}
-
             return heightMap;
         }
 
@@ -125,8 +96,6 @@ namespace Extensions
             {
                 return heightMap;
             }
-
-            Debug.Break();
 
             var distanceFromStartToBottom = Mathf.Abs(heightMap.GetLength(1) - (heightMap.GetLength(1) - heightMap.GetLength(1) / 4));
             var start = heightMap.GetLength(1) - heightMap.GetLength(1) / 4;

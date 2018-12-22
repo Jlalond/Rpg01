@@ -87,8 +87,13 @@ public class TerrainChunk {
         }
     }
 
-    public void Load() {
-        OnHeightMapReceived(HeightMapGenerator.GenerateHeightMap (_meshSettings.numVertsPerLine, _meshSettings.numVertsPerLine, _heightMapSettings, _unnormalizedCenter));
+    public void Load()
+    {
+        var heightMap = HeightMapGenerator.GenerateHeightMap(_meshSettings.numVertsPerLine,
+                                                             _meshSettings.numVertsPerLine, _heightMapSettings,
+                                                             _unnormalizedCenter);
+        _terrainChunkGameObject.HeightMap = heightMap.Values;
+        OnHeightMapReceived(heightMap);
     }
 
 
